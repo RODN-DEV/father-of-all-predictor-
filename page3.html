@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Aviator Predictor</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap');
+        
+        * {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        html, body {
+            height: 100%;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            background: #a1a1a1;
+            font-family: 'Poppins', sans-serif;
+            overflow: hidden;
+        }
+        
+        .header {
+            background: red;
+            color: white;
+            padding: 18px 0;
+            text-align: center;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            box-shadow: 0 4px 20px rgba(255, 0, 0, 0.3);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 3;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 22px;
+            font-weight: 700;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            letter-spacing: 0.5px;
+        }
+        
+        .version {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: linear-gradient(135deg, #1712b0, #0d0a6e);
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 700;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        
+        .scroll-container {
+            position: absolute;
+            top: 70px;
+            bottom: 0;
+            width: 100%;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            z-index: 2;
+        }
+        
+        .table-container {
+            padding: 15px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 10px;
+        }
+        
+        tr {
+            background-color: rgba(40, 40, 40, 0.9);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            overflow: hidden;
+            position: relative;
+            backdrop-filter: blur(2px);
+        }
+        
+        tr:hover {
+            background-color: rgba(60, 60, 60, 0.9);
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        tr::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 100%;
+            background: linear-gradient(90deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0) 100%);
+            pointer-events: none;
+        }
+        
+        td {
+            padding: 16px;
+            border: none;
+            font-weight: 700;
+            color: white;
+            font-size: 17px;
+            border-radius: 12px;
+        }
+        
+        .bookmaker-logo {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 12px;
+            vertical-align: middle;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(45deg, #ff6b6b, #ff0000);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 12px;
+        }
+        
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 0, 0, 0.4);
+            border-radius: 3px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 0, 0, 0.6);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        tr {
+            animation: fadeIn 0.3s ease forwards;
+            opacity: 0;
+        }
+        
+        tr:nth-child(1) { animation-delay: 0.1s; }
+        tr:nth-child(2) { animation-delay: 0.15s; }
+        tr:nth-child(3) { animation-delay: 0.2s; }
+        tr:nth-child(4) { animation-delay: 0.25s; }
+        tr:nth-child(5) { animation-delay: 0.3s; }
+        tr:nth-child(6) { animation-delay: 0.35s; }
+        tr:nth-child(7) { animation-delay: 0.4s; }
+        tr:nth-child(8) { animation-delay: 0.45s; }
+        tr:nth-child(9) { animation-delay: 0.5s; }
+        tr:nth-child(10) { animation-delay: 0.55s; }
+        tr:nth-child(11) { animation-delay: 0.6s; }
+        tr:nth-child(12) { animation-delay: 0.65s; }
+        tr:nth-child(13) { animation-delay: 0.7s; }
+        tr:nth-child(14) { animation-delay: 0.75s; }
+        tr:nth-child(15) { animation-delay: 0.8s; }
+        tr:nth-child(16) { animation-delay: 0.85s; }
+        tr:nth-child(17) { animation-delay: 0.9s; }
+        tr:nth-child(18) { animation-delay: 0.95s; }
+        tr:nth-child(19) { animation-delay: 1s; }
+        tr:nth-child(20) { animation-delay: 1.05s; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🎰 CHOOSE BOOKMAKER @v2_0x1 / ModHubLte 🎰</h1>
+    </div>
+    
+    <div class="scroll-container">
+        <div class="table-container">
+            <table>
+                <tr onclick="window.location.href='login.html'">
+                    <td><div class="bookmaker-logo">1W</div> 1WIN</td>
+                </tr>
+                <tr onclick="window.location.href='login.html'">
+                    <td><div class="bookmaker-logo">1X</div> 1XBET</td>
+                </tr>
+                <tr onclick="window.location.href='login.html'">
+                    <td><div class="bookmaker-logo">BW</div> BETWAY</td>
+                </tr>
+                <tr onclick="window.location.href='login.html'">
+                    <td><div class="bookmaker-logo">HW</div> HOLLYWOOD</td>
+                </tr>
+                <tr onclick="window.location.href='login.html'">
+                    <td><div class="bookmaker-logo">LS</div> LOTTO STAR</td>
+                </tr>
+                <tr onclick="window.location.href='login.html'">
+                    <td><div class="bookmaker-logo">EB</div> ELEPHANT BET</td>
+                </tr>
+                <tr onclick="window.location.href='login.html'">
+                    <td><div class="bookmaker-logo">PM</div> PARI MATCH</td>
+                </tr>
+                <tr onclick="window.location.href='login.html'">
+                    <td><div class="bookmaker-logo">MS</div> MULASPORT</td>
+                </tr>
+                <tr onclick="window.location.href='login.html'">
+                    <td><div class="bookmaker-logo">SB</div> SPORTYBET</td>
+                </tr>
+                <tr onclick="window.location.href='login.html'">
+                    <td><div class="bookmaker-logo">MB</div> MELBET</td>
+                </tr>
+                <tr onclick="window.location.href='login.html'">
+                    <td><div class="bookmaker-logo">MW</div> MWOS</td>
+                </tr>
+                <tr onclick="window.location.href='login.html'">
+                    <td><div class="bookmaker-logo">8S</div> 888 STARZ</td>
+                </tr>
+                <tr onclick="window.location.href='login.html'">
+                    <td><div class="bookmaker-logo">BP</div> BET PAWA</td>
+                </tr>
+                <tr onclick="window.location.href='login.html'">
+                    <td><div class="bookmaker-logo">BI</div> BETIKA</td>
+                </tr>
+                <tr onclick="window.location.href='login.html'">
+                    <td><div class="bookmaker-logo">B5</div> BET365</td>
+                </tr>
+                <tr onclick="window.location.href='login.html'">
+                    <td><div class="bookmaker-logo">PB</div> PREMIER BET</td>
+                </tr>
+                <tr onclick="window.location.href='login.html'">
+                    <td><div class="bookmaker-logo">MB</div> MOSTBET</td>
+                </tr>
+                <tr onclick="window.location.href='login.html'">
+                    <td><div class="bookmaker-logo">BW</div> BETWINNER</td>
+                </tr>
+                <tr onclick="window.location.href='login.html'">
+                    <td><div class="bookmaker-logo">NB</div> NANA BET</td>
+                </tr>
+                <tr onclick="window.location.href='login.html'">
+                    <td><div class="bookmaker-logo">BK</div> BETKING</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // Disable zooming and text selection but allow scrolling
+        document.addEventListener('gesturestart', function(e) {
+            e.preventDefault();
+        });
+    </script>
+</body>
+</html>
