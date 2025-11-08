@@ -1,0 +1,559 @@
+<meta name='viewport' content='width=device-width, initial-scale=1'/><!DOCTYPE html>
+<html>
+<head>
+    <title>Premium Predictions</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+            -webkit-text-size-adjust: none;
+            -ms-text-size-adjust: none;
+        }
+        
+        html, body {
+            height: 100%;
+            overflow: hidden;
+            position: fixed;
+            width: 100%;
+        }
+        
+        body {
+            background: #0a0a0a;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            font-family: 'Inter', system-ui, sans-serif;
+            color: white;
+            position: relative;
+            touch-action: none;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 1rem;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: 20px;
+        }
+
+        .header {
+            background: red;
+            padding: 1.5rem 3rem;
+            border-radius: 50px;
+            margin: 3rem 0 1rem 0;
+            box-shadow: 0 0 30px crimson;
+            text-align: center;
+            border: 2px solid #ff4d6d;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-weight: 900;
+            letter-spacing: 1px;
+            text-shadow: 0 0 15px rgba(255,255,255,0.3);
+            white-space: nowrap;
+            font-size: 0.9rem;
+        }
+
+        .rules-btn {
+            background: linear-gradient(135deg, #0066ff, #00ccff);
+            border: none;
+            padding: 0.1rem 0.3rem;
+            border-radius: 20px;
+            color: white;
+            font-weight: bold;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 1.2rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 0 15px rgba(0, 102, 255, 0.5);
+            align-self: flex-start;
+            margin-left: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .rules-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0, 102, 255, 0.8);
+        }
+
+        .rules-btn::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                to bottom right,
+                rgba(255, 255, 255, 0) 0%,
+                rgba(255, 255, 255, 0) 45%,
+                rgba(255, 255, 255, 0.5) 48%,
+                rgba(255, 255, 255, 0) 52%,
+                rgba(255, 255, 255, 0) 100%
+            );
+            transform: rotate(30deg);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% { left: -50%; }
+            20% { left: 150%; }
+            100% { left: 150%; }
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .modal-content {
+            background: linear-gradient(145deg, #111, #222);
+            width: 90%;
+            max-width: 400px;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 0 30px rgba(0, 102, 255, 0.5);
+            border: 1px solid rgba(0, 102, 255, 0.3);
+            position: relative;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+            max-height: 80vh;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-header h2 {
+            color: #00ccff;
+            font-size: 1.8rem;
+            margin: 0;
+            text-shadow: 0 0 10px rgba(0, 204, 255, 0.5);
+            letter-spacing: 1px;
+        }
+
+        .modal-body {
+            color: #ddd;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .modal-body p {
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .modal-body p span {
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(255, 0, 0, 0.3);
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .close-btn:hover {
+            background: rgba(255, 0, 0, 0.7);
+            transform: rotate(90deg);
+        }
+
+        .prediction-container {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            margin: 2rem 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .neon-ring {
+            position: absolute;
+            width: 320px;
+            height: 320px;
+            border-radius: 50%;
+            border: 3px solid transparent;
+            border-top: 3px solid #ff0055;
+            border-bottom: 3px solid #ff0055;
+            animation: spin 2s linear infinite;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.7);
+        }
+
+        .prediction-display {
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+            background: #0a0a0a;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            box-shadow: 0 0 30px rgba(0,0,0,0.5);
+            position: relative;
+            z-index: 2;
+        }
+
+        .prediction-value {
+            font-size: 3rem;
+            font-weight: bold;
+            color: white;
+            text-shadow: 0 0 15px rgba(255, 0, 0, 0.8);
+            height: 60px;
+            margin: 10px 0;
+            transition: all 0.3s;
+        }
+
+        .prediction-status {
+            font-size: 1rem;
+            color: #00ff88;
+            margin-top: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .prediction-btn {
+            width: 80%;
+            max-width: 300px;
+            padding: 15px;
+            border-radius: 10px;
+            border: none;
+            background: red;
+            color: white;
+            font-family: 'Inter', system-ui, sans-serif;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 20px auto;
+            font-size: 1.1rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .prediction-btn:active {
+            transform: scale(0.98);
+        }
+
+        .prediction-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            background: #ab0000;
+        }
+
+        .footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background: #0a0a0a;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            z-index: 10;
+            box-sizing: border-box;
+        }
+
+        .telegram-btn {
+            background: linear-gradient(135deg, #0088cc, #00c1ff);
+            border: none;
+            padding: 12px 25px;
+            border-radius: 30px;
+            color: white;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(0, 193, 255, 0.3);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.2);
+            width: auto;
+            max-width: 90%;
+        }
+
+        .telegram-btn i:last-child {
+            color: #00ff88;
+            font-size: 0.9rem;
+        }
+
+        .copyright {
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.6);
+            margin-top: 5px;
+            text-align: center;
+            width: 100%;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+    </style>
+</head>
+<!-- Web App Manifest -->
+<link rel="manifest" href="manifest.json">
+
+<!-- Theme Color for Chrome, Firefox OS and Opera -->
+<meta name="theme-color" content="#000000">
+
+<!-- Apple iOS Specific Tags -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="Father of All Predictor">
+<link rel="apple-touch-icon" href="icon-192.png">
+
+<!-- Microsoft Windows Specific Tags -->
+<meta name="msapplication-TileImage" content="icon-192.png">
+<meta name="msapplication-TileColor" content="#000000">
+
+<!-- Viewport for responsive design -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<body>
+    <div class="main-content">
+        <div class="header">
+            <h1>👑 FATHER OF ALL PREDICTOR HACKED👑</h1>
+        </div>
+
+        <button class="rules-btn" id="rulesBtn">
+            📜 RULES 📜
+        </button>
+
+        <div class="prediction-container">
+            <div class="neon-ring"></div>
+            <div class="prediction-display">
+                <div class="prediction-value" id="predictionValue">START</div>
+                <div class="prediction-status" id="predictionStatus">READY</div>
+            </div>
+        </div>
+
+        <button class="prediction-btn" id="predictBtn" onclick="startPrediction()">🔮 START 🔮</button>
+    </div>
+
+    <div class="footer">
+    <a href="https://t.me/Aviator_Prince" class="telegram-btn" target="_blank" style="text-decoration: none;">
+        <i class="fab fa-telegram"></i>
+        Telegram Hacker👉 @v2_0x1
+        <i class="fas fa-check-circle"></i>
+    </a>
+    <div class="copyright">🛜 SERVER STATUS : CONNECTED 🟢</div>
+</div>
+
+    <!-- Rules Modal -->
+    <div class="modal-overlay" id="rulesModal">
+        <div class="modal-content">
+            <button class="close-btn" id="closeModal">&times;</button>
+            <div class="modal-header">
+                <h2>🚨 RULES 🚨</h2>
+            </div>
+            <div class="modal-body">
+                <p><span>💰</span> Withdraw when balance reaches $500 or less to secure profits</p>
+                <p><span>⏭️</span> Skip some rounds to avoid account suspension</p>
+                <p><span>🎯</span> Stake $60 or less to prevent suspicious activity</p>
+                <p><span>📈</span> Always bet on 2x or higher odds</p>
+                <p><span>🔒</span> Never share your login credentials</p>
+                <p><span>✨</span> Trust in the predictor's wisdom</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let isGenerating = false;
+
+        // Modal functionality
+        const rulesBtn = document.getElementById('rulesBtn');
+        const rulesModal = document.getElementById('rulesModal');
+        const closeModal = document.getElementById('closeModal');
+
+        rulesBtn.addEventListener('click', () => {
+            rulesModal.classList.add('active');
+        });
+
+        closeModal.addEventListener('click', () => {
+            rulesModal.classList.remove('active');
+        });
+
+        rulesModal.addEventListener('click', (e) => {
+            if (e.target === rulesModal) {
+                rulesModal.classList.remove('active');
+            }
+        });
+
+        function generatePrediction() {
+            // Generate a random number between 0 and 1
+            const rand = Math.random();
+            
+            // 70% chance for small numbers (1.00x - 2.00x)
+            if (rand < 0.7) {
+                return (1 + Math.random()).toFixed(2) + 'x';
+            } 
+            // 20% chance for medium numbers (2.00x - 5.00x)
+            else if (rand < 0.9) {
+                return (2 + Math.random() * 3).toFixed(2) + 'x';
+            } 
+            // 10% chance for big numbers (5.00x - 10.00x)
+            else {
+                return (5 + Math.random() * 5).toFixed(2) + 'x';
+            }
+        }
+
+        function startPrediction() {
+            if(isGenerating) return;
+            
+            const btn = document.getElementById('predictBtn');
+            const valueDisplay = document.getElementById('predictionValue');
+            const statusDisplay = document.getElementById('predictionStatus');
+            
+            btn.disabled = true;
+            btn.innerHTML = '🔮 NEXT PREDICTION 🔮';
+            isGenerating = true;
+            
+            statusDisplay.textContent = 'Wait For Signal...';
+            
+            let lastUpdate = 0;
+            const generateInterval = setInterval(() => {
+                const now = Date.now();
+                if(now - lastUpdate > 30) {
+                    valueDisplay.style.opacity = 0;
+                    setTimeout(() => {
+                        valueDisplay.textContent = (1 + Math.random() * 9).toFixed(2) + 'x';
+                        valueDisplay.style.opacity = 1;
+                    }, 20);
+                    lastUpdate = now;
+                }
+            }, 10);
+
+            setTimeout(() => {
+                clearInterval(generateInterval);
+                
+                valueDisplay.style.opacity = 0;
+                setTimeout(() => {
+                    const result = generatePrediction();
+                    valueDisplay.textContent = result;
+
+                    valueDisplay.style.opacity = 1;
+                    valueDisplay.classList.add('fade-in');
+                    statusDisplay.textContent = 'FLYING AWAY';
+                    
+                    btn.disabled = false;
+                    btn.innerHTML = '🔮 NEXT PREDICTION 🔮';
+                    isGenerating = false;
+
+                    setTimeout(() => {
+                        valueDisplay.classList.remove('fade-in');
+                    }, 500);
+                }, 50);
+            }, 2000);
+        }
+
+        // Prevent all unwanted interactions
+        document.addEventListener('touchmove', function(e) {
+            // Only allow scrolling in modal content
+            if (!e.target.closest('.modal-content')) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+
+        // Prevent zooming
+        document.addEventListener('gesturestart', function(e) {
+            e.preventDefault();
+        });
+        
+        document.addEventListener('gesturechange', function(e) {
+            e.preventDefault();
+        });
+        
+        document.addEventListener('gestureend', function(e) {
+            e.preventDefault();
+        });
+
+        // Prevent double tap zoom
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', function(event) {
+            const now = (new Date()).getTime();
+            if (now - lastTouchEnd <= 300) {
+                event.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, false);
+
+        // Prevent text selection
+        document.addEventListener('selectstart', function(e) {
+            e.preventDefault();
+        });
+
+        // Prevent context menu
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+        });
+    </script>
+</body>
+</html>
