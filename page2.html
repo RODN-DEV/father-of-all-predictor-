@@ -1,0 +1,296 @@
+<meta name='viewport' content='width=device-width, initial-scale=1'/><meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no'>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Premium Access</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        html, body {
+            overflow: hidden;
+            touch-action: none;
+            height: 100%;
+            width: 100%;
+            position: fixed;
+        }
+
+        body {
+            background: #0a0a0a;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            padding: 0;
+            color: white;
+            background-image: 
+                radial-gradient(circle at 25% 25%, rgba(220, 20, 60, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(0, 102, 255, 0.15) 0%, transparent 50%);
+        }
+
+        .message-card {
+            background: linear-gradient(145deg, #1a1a1a, #0d0d0d);
+            border-radius: 20px;
+            padding: 2.5rem;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 
+                0 10px 30px rgba(220, 20, 60, 0.3),
+                0 0 0 1px rgba(220, 20, 60, 0.2);
+            position: relative;
+            overflow: hidden;
+            margin: 20px;
+            text-align: center;
+        }
+
+        .message-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0) 70%);
+            animation: rotate 15s linear infinite;
+            z-index: 0;
+        }
+
+        .message-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(90deg, #dc143c, #a01030);
+            padding: 8px 20px;
+            border-radius: 30px;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+            box-shadow: 0 4px 15px rgba(220, 20, 60, 0.3);
+        }
+
+        h2 {
+            margin: 1.5rem 0;
+            font-size: 1.5rem;
+            color: #ffffff;
+            text-shadow: 0 0 10px rgba(220, 20, 60, 0.5);
+        }
+
+        .feature-list {
+            text-align: left;
+            margin: 2rem 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .feature-list li {
+            margin: 1.2rem 0;
+            padding-left: 32px;
+            position: relative;
+            font-size: 1rem;
+        }
+
+        .feature-list li::before {
+            content: '\f058';
+            font-family: 'Font Awesome 6 Free';
+            position: absolute;
+            left: 0;
+            color: #00ff88;
+            font-weight: 900;
+            text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+        }
+
+        .contact-button {
+            display: block;
+            margin: 1rem auto;
+            padding: 14px 28px;
+            background: linear-gradient(90deg, #0088cc, #006699);
+            color: white;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(0, 136, 204, 0.4);
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            position: relative;
+            overflow: hidden;
+            width: 80%;
+            max-width: 300px;
+        }
+
+        .contact-button.whatsapp {
+            background: linear-gradient(90deg, #25D366, #128C7E);
+            box-shadow: 0 5px 20px rgba(37, 211, 102, 0.4);
+        }
+
+        .contact-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 136, 204, 0.5);
+        }
+
+        .contact-button.whatsapp:hover {
+            box-shadow: 0 8px 25px rgba(37, 211, 102, 0.5);
+        }
+
+        .contact-button:active {
+            transform: translateY(-1px);
+        }
+
+        .contact-button::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                to bottom right, 
+                rgba(255,255,255,0) 45%, 
+                rgba(255,255,255,0.15) 50%, 
+                rgba(255,255,255,0) 55%
+            );
+            transform: rotate(30deg);
+            animation: shine 3s infinite;
+        }
+
+        .guarantee-footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            padding: 1.2rem 0;
+            background: linear-gradient(90deg, rgba(0,0,0,0.9), rgba(20,20,20,0.9), rgba(0,0,0,0.9));
+            color: #ffffff;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            backdrop-filter: blur(5px);
+            border-top: 1px solid rgba(220, 20, 60, 0.3);
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            z-index: 10;
+        }
+
+        .star {
+            color: #ffd700;
+            filter: drop-shadow(0 0 4px #ffd700);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(0.95); }
+        }
+
+        @keyframes shine {
+            0% { left: -100%; }
+            20% { left: 100%; }
+            100% { left: 100%; }
+        }
+
+        @media (max-width: 480px) {
+            .message-card {
+                padding: 1.8rem;
+                width: 85%;
+            }
+            
+            h2 {
+                font-size: 1.3rem;
+            }
+            
+            .feature-list li {
+                font-size: 0.9rem;
+            }
+            
+            .contact-button {
+                padding: 12px 24px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<!-- Web App Manifest -->
+<link rel="manifest" href="manifest.json">
+
+<!-- Theme Color for Chrome, Firefox OS and Opera -->
+<meta name="theme-color" content="#000000">
+
+<!-- Apple iOS Specific Tags -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="Father of All Predictor">
+<link rel="apple-touch-icon" href="icon-192.png">
+
+<!-- Microsoft Windows Specific Tags -->
+<meta name="msapplication-TileImage" content="icon-192.png">
+<meta name="msapplication-TileColor" content="#000000">
+
+<!-- Viewport for responsive design -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<body>
+    <div class="message-card">
+        <div class="message-content">
+            <div class="badge">
+                <i class="fas fa-shield-alt"></i>
+                <span>OFFICIAL COMMUNICATION</span>
+            </div>
+
+            <h2>🔐 PREMIUM ACCESS JOIN TG @DAILYODDSMAN1</h2>
+            
+            <ul class="feature-list">
+                <li>VPN is not required</li>
+                <li>Login details cost ~ $0 USD</li>
+                <li>Full premium features unlocked</li>
+                <li>Strictly personal use (no sharing)</li>
+            </ul>
+
+            <a href="https://t.me/dailyoddsman1" class="contact-button" target="_blank">
+                <i class="fab fa-telegram"></i> Telegram: @Aviator_Prince
+            </a>
+            
+            <a href="https://t.me/dailyoddsman1" class="contact-button whatsapp" target="_blank">
+                <i class="fab fa-whatsapp"></i> WhatsApp: +256745430208
+            </a>
+        </div>
+    </div>
+
+    <div class="guarantee-footer">
+        <i class="fas fa-star star"></i>
+        <span>100% SATISFACTION GUARANTEE</span>
+        <i class="fas fa-star star"></i>
+    </div>
+
+    <script>
+        // Disable all forms of scrolling/zooming
+        document.addEventListener('touchmove', function(e) {
+            e.preventDefault();
+        }, { passive: false });
+
+        document.addEventListener('gesturestart', function(e) {
+            e.preventDefault();
+        });
+
+        // Auto-redirect after 7 seconds
+        setTimeout(() => {
+            window.location.href = 'page3.html';
+        }, 7000);
+    </script>
+</body>
+</html>
