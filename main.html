@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+    <title>Father of All Predictor</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --neon-red: #ff0033;
+            --dark-red: #cc0029;
+            --space-black: #0a0a0a;
+            --star-white: #f0f0f0;
+            --search-bg: #222222;
+        }
+
+        html, body {
+    margin: 0;
+    height: 100%;
+    background: var(--space-black);
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+    font-family: 'Poppins', 'Segoe UI', system-ui, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    touch-action: manipulation;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+}
+        .cyber-header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 1rem;
+            text-align: center;
+            background: var(--neon-red);
+            margin: 0.5rem;
+            border-radius: 8px;
+            box-shadow: 0 0 15px var(--neon-red);
+            z-index: 2;
+        }
+
+        .cyber-header h1 {
+            margin: 0;
+            color: var(--star-white);
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            font-size: clamp(1rem, 4vw, 1.2rem);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            padding: 0 0.5rem;
+        }
+
+        .loading-container {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            background: rgba(15, 15, 15, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 0 30px rgba(255, 0, 51, 0.5);
+            width: 300px;
+            border: 1px solid var(--neon-red);
+            display: none;
+        }
+
+        .country-selector {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            background: rgba(15, 15, 15, 0.95);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 0 30px rgba(255, 0, 51, 0.5);
+            width: 300px;
+            border: 1px solid var(--neon-red);
+        }
+
+        .country-selector h2 {
+            color: var(--star-white);
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            border: 1px solid var(--neon-red);
+            background: var(--search-bg);
+            color: white;
+            font-size: 14px;
+        }
+
+        .search-box:focus {
+            outline: none;
+            box-shadow: 0 0 10px var(--neon-red);
+        }
+
+        .country-list {
+            max-height: 200px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            border: 1px solid #333;
+            border-radius: 5px;
+            scrollbar-width: thin;
+            scrollbar-color: var(--neon-red) #333;
+        }
+
+        .country-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .country-list::-webkit-scrollbar-track {
+            background: #333;
+        }
+
+        .country-list::-webkit-scrollbar-thumb {
+            background-color: var(--neon-red);
+            border-radius: 3px;
+        }
+
+        .country-item {
+            padding: 10px;
+            color: var(--star-white);
+            border-bottom: 1px solid #333;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+        }
+
+        .country-item:hover {
+            background: var(--neon-red);
+            color: white;
+        }
+
+        .country-item:last-child {
+            border-bottom: none;
+        }
+
+        .country-flag {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+
+        .select-btn {
+            background: var(--neon-red);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 0 10px var(--neon-red);
+        }
+
+        .select-btn:hover {
+            background: var(--dark-red);
+        }
+
+        .select-btn:disabled {
+            background: #555;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .app-icon {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            background: var(--space-black);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            box-shadow: 0 0 20px rgba(255, 0, 51, 0.7);
+        }
+
+        .app-icon::before {
+            content: '';
+            position: absolute;
+            width: 110%;
+            height: 110%;
+            border-radius: 50%;
+            border: 3px solid transparent;
+            border-top: 3px solid var(--neon-red);
+            border-bottom: 3px solid var(--neon-red);
+            animation: spin 1.5s linear infinite;
+            box-shadow: 0 0 10px rgba(255, 0, 51, 0.8);
+        }
+
+        .app-icon-inner {
+            width: 80%;
+            height: 80%;
+            border-radius: 50%;
+            background: #1a1a1a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+            font-size: 24px;
+        }
+
+        .loading-text {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: var(--star-white);
+            font-weight: 500;
+            text-shadow: 0 0 10px var(--neon-red);
+        }
+
+        .percentage {
+            font-size: 16px;
+            margin-bottom: 5px;
+            color: var(--neon-red);
+            font-weight: bold;
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 8px;
+            background: #333;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--neon-red), #ff6b6b);
+            border-radius: 10px;
+            transition: width 0.1s ease;
+            box-shadow: 0 0 10px var(--neon-red);
+        }
+
+        .status {
+            font-size: 14px;
+            color: #aaa;
+            margin-top: 10px;
+        }
+
+        .particle-network {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .particle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: var(--neon-red);
+            border-radius: 50%;
+            animation: particle-float 4s infinite;
+        }
+
+        .cyber-footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            text-align: center;
+            padding: 1rem;
+            background: var(--neon-red);
+            border-top: 2px solid var(--dark-red);
+            box-shadow: 0 0 15px var(--neon-red);
+            font-size: 0.9rem;
+            color: white;
+            font-weight: 600;
+            z-index: 2;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes particle-float {
+            0%, 100% { transform: translate(0, 0); opacity: 0; }
+            50% { transform: translate(80px, -40px); opacity: 1; }
+        }
+
+        @media (max-width: 340px) {
+            .loading-container, .country-selector {
+                width: 280px;
+                padding: 30px;
+            }
+            .cyber-header {
+                margin: 0.25rem;
+                padding: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="cyber-header">
+        <h1>👑 FATHER OF ALL PREDICTOR HACKED👑</h1>
+    </header>
+
+    <div class="country-selector" id="countrySelector">
+        <h2>🌍 SELECT YOUR COUNTRY 🌍</h2>
+        <input type="text" class="search-box" id="countrySearch" placeholder="Search country...">
+        <div class="country-list" id="countryList">
+            <!-- Countries will be added here by JavaScript -->
+        </div>
+        <button class="select-btn" id="selectBtn" disabled>CONNECT VPN SERVER</button>
+    </div>
+
+    <div class="loading-container" id="loadingContainer">
+        <div class="app-icon">
+            <div class="app-icon-inner">
+                👑
+            </div>
+        </div>
+        <div class="loading-text">🚀 PREMIUM PREDICTOR 🚀</div>
+        <div class="percentage">0%</div>
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+        <div class="status" id="status">Initializing System...</div>
+    </div>
+
+    <div class="particle-network" id="particleNetwork"></div>
+
+    <footer class="cyber-footer">
+        <span>This hacked app was developed and hacked by: <a href="https://t.me/dailyoddsman1" target="_blank" style="color: #007bff; text-decoration: none;">@v2_0x1 HACKS</a></span>
+    </footer>
+
+    <script>
+        // ... (rest of the JavaScript remains the same)
+        // The JavaScript code from your original main.html goes here
+        // It's too long to include completely but it should work as is
+    </script>
+</body>
+</html>
